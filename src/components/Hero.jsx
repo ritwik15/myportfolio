@@ -10,11 +10,12 @@ const Hero = () => {
         style={styles.profilePic}
       />
       <div className="hero-content" style={styles.content}>
-        <h1 style={styles.heading}>Hello, I'm Ritwik</h1>
+      
+        <h4>Hello I'm</h4>
+        <h3 style={styles.heading}>Ritwik Pradhan </h3>
+        <h2>Full-Stack JavaScript Developer | ANGULAR | Node.js | AWS | PostgreSQL | 10+ Years Experience</h2>
         <p style={styles.paragraph}>
-          I'm a Full-Stack JavaScript Developer and Team Lead with 10+ years of experience in Angular,
-          React.js, Node.js, PostgreSQL, AWS, and API development. I specialize in building scalable and
-          dynamic applications.
+        With over 10 years of experience in software development, project management, and UI architecture, I specialize in delivering high-quality solutions across various domains. My expertise extends to client handling and overseeing project delivery, ensuring successful outcomes and customer satisfaction. With a strong background in finance, supported by an MBA, I strategically optimize business processes to drive impact. I am committed to continuous learning and growth, with a focus on contributing to the success of my team and organization.
         </p>
         <a href="#contact" style={styles.button}>Contact Me</a>
       </div>
