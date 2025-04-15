@@ -9,6 +9,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect } from 'react';
 import WaveSeparator from './components/WaveSeparator';
+import ProfessionalExperience from './components/Experience';
 function App() {
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -16,15 +17,17 @@ function App() {
   return (
     <>
       <Navbar />
-      
+      <WaveSeparator flip />
       <Hero />
       <WaveSeparator />
       <About />
       <WaveSeparator flip />
       <Projects />
       <WaveSeparator />
+      <ProfessionalExperience />
+      <WaveSeparator flip/>
       <Skills />
-      <WaveSeparator flip />
+      <WaveSeparator  />
       <Contact />
     </>
   );

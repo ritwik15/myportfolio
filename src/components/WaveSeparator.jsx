@@ -1,8 +1,15 @@
 import React from 'react';
 
-const WaveSeparator = ({ flip = false }) => {
+const WaveSeparator = ({ flip = false, spacing = '40px' }) => {
   return (
-    <div style={{ overflow: 'hidden', lineHeight: 0 }}>
+    <div
+      style={{
+        overflow: 'hidden',
+        lineHeight: 0,
+        marginTop: spacing,
+        marginBottom: spacing,
+      }}
+    >
       <svg
         viewBox="0 0 1440 150"
         style={{
