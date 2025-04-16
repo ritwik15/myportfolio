@@ -10,12 +10,18 @@ import 'aos/dist/aos.css';
 import { useEffect } from 'react';
 import WaveSeparator from './components/WaveSeparator';
 import ProfessionalExperience from './components/Experience';
+import { DarkModeProvider } from './components/DarkModeContext'; // adjust the 
+// path if needed
+import { useDarkMode } from './components/DarkModeContext';
+
 function App() {
+  const { darkMode } = useDarkMode(); // 👈 get the dark mode state
   useEffect(() => {
     AOS.init({ duration: 800 });
   }, []);
+
   return (
-    <>
+    <div className={darkMode ? 'dark-mode' : ''}> {/* 👈 root-level class */}
       <Navbar />
       <WaveSeparator flip />
       <Hero />
@@ -25,11 +31,11 @@ function App() {
       <Projects />
       <WaveSeparator />
       <ProfessionalExperience />
-      <WaveSeparator flip/>
+      <WaveSeparator flip />
       <Skills />
-      <WaveSeparator  />
+      <WaveSeparator />
       <Contact />
-    </>
+    </div>
   );
 }
 

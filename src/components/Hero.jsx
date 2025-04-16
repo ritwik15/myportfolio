@@ -13,7 +13,7 @@ const Hero = () => {
       
         <h4>Hello I'm</h4>
         <h3 style={styles.heading}>Ritwik Pradhan </h3>
-        <h2>Full-Stack JavaScript Developer | ANGULAR | Node.js | AWS | PostgreSQL | 10+ Years Experience</h2>
+        <h3>Full-Stack JavaScript Developer | ANGULAR | Node.js | AWS | PostgreSQL | 10+ Years Experience</h3>
         <p style={styles.paragraph}>
         With over 10 years of experience in software development, project management, and UI architecture, I specialize in delivering high-quality solutions across various domains. My expertise extends to client handling and overseeing project delivery, ensuring successful outcomes and customer satisfaction. With a strong background in finance, supported by an MBA, I strategically optimize business processes to drive impact. I am committed to continuous learning and growth, with a focus on contributing to the success of my team and organization.
         </p>
