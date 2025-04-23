@@ -1,125 +1,97 @@
 import React, { useState, useEffect } from 'react';
-import { FaHome, FaUser, FaProjectDiagram, FaBriefcase, FaTools, FaPhoneAlt, FaSun, FaMoon, FaBars } from 'react-icons/fa';
-import { useDarkMode } from './DarkModeContext';
+import { FaMoon, FaBars, FaTimes, FaSun } from 'react-icons/fa';
+import { useDarkMode } from './DarkModeContext'; // Adjust path as necessary
 
 const Navbar = () => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, toggleDarkMode } = useDarkMode(); // Correct usage of context
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  // Handle screen resize
+  const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth > 768) setIsOpen(false); // close mobile menu if switching to desktop
-    };
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleToggleMenu = () => setIsOpen(prev => !prev);
+  const isLargeScreen = windowWidth >= 1024;
 
   return (
-    <nav style={{
-      backgroundColor: darkMode ? '#1e1e1e' : '#fff',
-      color: darkMode ? '#fff' : '#000',
-      padding: '12px 24px',
-      borderBottom: '1px solid #e2e8f0',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000
-    }}>
-      <div style={styles.navbarContainer}>
-        {/* <div style={styles.brand}>
-          <h2 style={{ margin: 0, color: '#0070f3' }}>Ritwik</h2>
-        </div> */}
+    <nav className="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50 transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Brand */}
+          <div className="text-2xl font-bold text-blue-600 dark:text-white">Ritwik</div>
 
-        {isMobile ? (
-          <>
-            <button style={styles.hamburgerBtn} onClick={handleToggleMenu}><FaBars /></button>
-            {isOpen && (
-              <ul style={styles.mobileMenu}>
-                {navItems()}
-              </ul>
-            )}
-          </>
-        ) : (
-          <ul style={styles.desktopMenu}>
-            {navItems()}
-          </ul>
-        )}
+          {/* Desktop Menu */}
+          {isLargeScreen ? (
+            <div className="flex items-center space-x-6">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-blue-600 dark:text-white font-medium hover:underline"
+                >
+                  {link.name}
+                </a>
+              ))}
+              {/* Dark Mode Toggle */}
+              <button onClick={toggleDarkMode} className="text-xl">
+                {darkMode ? (
+                  <FaSun className="text-yellow-500 dark:text-white" />
+                ) : (
+                  <FaMoon className="text-gray-800 dark:text-white" />
+                )}
+              </button>
+            </div>
+          ) : (
+            // Mobile Menu
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-2xl text-blue-600 dark:text-white"
+                aria-label="Toggle Navigation Menu"
+              >
+                {isOpen ? <FaTimes /> : <FaBars />}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Mobile Menu (only visible when open) */}
+      {!isLargeScreen && isOpen && (
+        <div className="bg-white dark:bg-gray-800 text-center px-4 pb-4">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="block py-2 text-blue-600 dark:text-white font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => setIsOpen(false)} // Close menu after clicking a link
+            >
+              {link.name}
+            </a>
+          ))}
+          {/* Dark Mode Toggle */}
+          <button onClick={toggleDarkMode} className="mt-4 text-xl">
+            {darkMode ? (
+              <FaSun className="text-yellow-500 dark:text-white" />
+            ) : (
+              <FaMoon className="text-gray-800 dark:text-white" />
+            )}
+          </button>
+        </div>
+      )}
     </nav>
   );
-
-  function navItems() {
-    return (
-      <>
-        <li><a href="#hero" style={styles.link}><FaHome /> Home</a></li>
-        <li><a href="#about" style={styles.link}><FaUser /> About</a></li>
-        <li><a href="#projects" style={styles.link}><FaProjectDiagram /> Projects</a></li>
-        <li><a href="#professionalexp" style={styles.link}><FaBriefcase /> Experience</a></li>
-        <li><a href="#skills" style={styles.link}><FaTools /> Skills</a></li>
-        <li><a href="#contact" style={styles.link}><FaPhoneAlt /> Contact</a></li>
-        <li>
-          <button onClick={toggleDarkMode} style={styles.toggleBtn}>
-            {darkMode ? <FaSun /> : <FaMoon />}
-          </button>
-
-        </li>
-      </>
-    );
-  }
-};
-
-const styles = {
-  navbarContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  },
-  brand: {
-    fontSize: '20px',
-    fontWeight: 'bold'
-  },
-  hamburgerBtn: {
-    background: 'transparent',
-    border: 'none',
-    fontSize: '22px',
-    cursor: 'pointer',
-    color: 'inherit'
-  },
-  mobileMenu: {
-    listStyle: 'none',
-    padding: 0,
-    marginTop: 10,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  desktopMenu: {
-    listStyle: 'none',
-    display: 'flex',
-    gap: '24px',
-    margin: 0,
-    alignItems: 'center'
-  },
-  link: {
-    textDecoration: 'none',
-    color: '#0070f3',
-    fontWeight: 'bold',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px'
-  },
-  toggleBtn: {
-    background: 'transparent',
-    border: 'none',
-    fontSize: '18px',
-    cursor: 'pointer',
-    color: 'inherit'
-  }
 };
 
 export default Navbar;

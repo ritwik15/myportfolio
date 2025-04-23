@@ -142,51 +142,64 @@
     font-size: 16px;
   }
   
-  /* === Hero Section === */
+ /* === Hero Section === */
+/* === Hero Section === */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  overflow: hidden; /* Prevents any overflow outside the section */
+}
+
+.hero-content {
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.hero img {
+  width: 150px; /* Reduced width */
+  height: 150px; /* Keep the aspect ratio */
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 30px;
+  max-width: 100%; /* Ensures the image is responsive */
+  height: auto;
+}
+
+@media (min-width: 768px) {
   .hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 60px 20px;
+    flex-direction: row;
+    text-align: left;
+    justify-content: center; /* Centers content on larger screens */
+    padding: 80px 40px;
+    overflow: visible; /* Allows content to expand on larger screens */
   }
-  
-  .hero-content {
-    max-width: 600px;
-  }
-  
-  @media (min-width: 768px) {
-    .hero {
-      flex-direction: row;
-      text-align: left;
-      justify-content: space-between;
-      padding: 80px 40px;
-    }
-  
-    .hero-content {
-      max-width: 600px;
-    }
-  
-    .hero img {
-      width: 200px;
-      margin-right: 40px;
-    }
-  }
-  
-  /* === Profile Image === */
-  .profile-pic {
-    width: 180px;
+
+  .hero img {
+    width: 180px; /* Larger size for bigger screens */
     height: 180px;
-    border-radius: 50%;
-    object-fit: cover;
+    margin-right: 40px;
   }
-  
-  @media (max-width: 480px) {
-    .profile-pic {
-      width: 120px;
-      height: 120px;
-    }
+}
+
+@media (max-width: 480px) {
+  .hero img {
+    width: 120px; /* Smaller image on mobile */
+    height: 120px;
   }
+}
+
+/* === Profile Image (for mobile responsiveness) === */
+@media (max-width: 480px) {
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+  }
+}
+
   
   /* === Projects Section as Responsive Grid === */
   .projects {

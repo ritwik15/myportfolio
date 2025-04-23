@@ -2,70 +2,41 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <section className="hero-pattern" id="hero" style={styles.section}>
+    <section className="h-screen flex flex-col justify-center items-center bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white text-center px-6 py-20 sm:py-32 rounded-b-3xl shadow-inner">
+      {/* Profile Image */}
       <img
-        className="profile-pic"
         src="/profile.jpg"
         alt="Ritwik's profile picture"
-        style={styles.profilePic}
+        className="w-40 h-40 sm:w-44 sm:h-44 object-cover border-4 border-white rounded-full shadow-xl mb-6 transition-transform duration-500 hover:scale-105"
       />
-      <div className="hero-content" style={styles.content}>
-      
-        <h4>Hello I'm</h4>
-        <h3 style={styles.heading}>Ritwik Pradhan </h3>
-        <h3>Full-Stack JavaScript Developer | ANGULAR | Node.js | AWS | PostgreSQL | 10+ Years Experience</h3>
-        <p style={styles.paragraph}>
-        With over 10 years of experience in software development, project management, and UI architecture, I specialize in delivering high-quality solutions across various domains. My expertise extends to client handling and overseeing project delivery, ensuring successful outcomes and customer satisfaction. With a strong background in finance, supported by an MBA, I strategically optimize business processes to drive impact. I am committed to continuous learning and growth, with a focus on contributing to the success of my team and organization.
+
+      {/* Intro Container */}
+      <div className="max-w-4xl">
+        <p className="text-sm sm:text-base tracking-widest uppercase mb-2 text-white/80">
+          Hello, I'm
         </p>
-        <a href="#contact" style={styles.button}>Contact Me</a>
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">Ritwik Pradhan</h1>
+
+        <h2 className="text-lg sm:text-xl font-medium text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
+          Full-Stack JavaScript Developer | Angular | Node.js | AWS | PostgreSQL <br />
+          10+ Years Experience in Leadership, Architecture & Delivery
+        </h2>
+
+        <p className="text-white/80 text-base sm:text-lg font-light leading-relaxed max-w-3xl mx-auto mb-8">
+          I specialize in building scalable applications and leading cross-functional teams.
+          With a solid foundation in finance and project management, I align technology with business goals to deliver impact.
+          Passionate about modern web tech, clean code, and mentoring engineers.
+        </p>
+
+        <a
+          href="#contact"
+          className="inline-block bg-white text-blue-700 font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-gray-100 transition-transform duration-300 hover:scale-105"
+        >
+          Contact Me
+        </a>
       </div>
     </section>
   );
-};
-
-const styles = {
-  section: {
-
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    padding: '80px 20px',
-    borderRadius: '12px',
-    marginBottom: '40px',
-  },
-  profilePic: {
-    width: '150px',
-    height: '150px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-    marginBottom: '20px',
-    border: '4px solid #fff',
-    boxShadow: '0 0 12px rgba(0, 0, 0, 0.1)',
-  },
-  content: {
-    maxWidth: '800px',
-  },
-  heading: {
-    fontSize: '36px',
-    color: '#0070f3',
-    marginBottom: '20px',
-  },
-  paragraph: {
-    fontSize: '18px',
-    color: '#333',
-    marginBottom: '30px',
-    lineHeight: '1.6',
-  },
-  button: {
-    padding: '12px 24px',
-    backgroundColor: '#0070f3',
-    color: '#fff',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    transition: 'background 0.3s',
-  }
 };
 
 export default Hero;

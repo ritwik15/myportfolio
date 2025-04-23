@@ -1,22 +1,22 @@
-// src/context/DarkModeContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const DarkModeContext = createContext();
 
 export const DarkModeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
-    // persist in localStorage
+    // Persist in localStorage
     return localStorage.getItem('darkMode') === 'true';
   });
 
   useEffect(() => {
+    // Store the dark mode preference in localStorage
     localStorage.setItem('darkMode', darkMode);
+    // Apply the dark mode class to the <body>
     if (darkMode) {
-        document.body.classList.add('dark-mode'); // 👈 apply to <body>
-      } else {
-        document.body.classList.remove('dark-mode');
-      }
-    document.body.className = darkMode ? 'dark' : 'light';
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }, [darkMode]);
 
   const toggleDarkMode = () => setDarkMode(prev => !prev);
@@ -28,7 +28,7 @@ export const DarkModeProvider = ({ children }) => {
   );
 };
 
+// Corrected `useDarkMode` hook
 export const useDarkMode = () => {
-    const [darkMode, setDarkMode] = useState(false);
-    return { darkMode, setDarkMode };
-  };
+  return useContext(DarkModeContext);
+};
