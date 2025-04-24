@@ -29,13 +29,13 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-16 px-4 bg-gray-50 text-center">
+    <section id="skills" className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-12 px-4">
       <h2 className="text-3xl font-bold text-blue-600 mb-6 text-center">Skills</h2>
       <div className="flex flex-wrap justify-center gap-4">
         {skills.map((skill, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 bg-white text-gray-800 rounded-full px-5 py-2 shadow hover:shadow-md transition"
+            className="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 border dark:border-gray-600 px-3 py-1 rounded-full shadow hover:shadow-md transition content-center"
           >
             <span className="text-xl">{skill.icon}</span>
             <span className="text-base font-medium">{skill.name}</span>

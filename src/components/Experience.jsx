@@ -2,14 +2,14 @@ import React from "react";
 
 const ProfessionalExperience = () => {
   return (
-    <section id="professionalexp" className="py-16 bg-gray-100 dark:bg-gray-800">
+    <section id="professionalexp" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-12 px-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-white mb-12">Professional Experience</h2>
 
         {/* Experience 1: Team Lead Development */}
-        <div className="experience-item bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 mb-8">
-          <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400">🚀 Team Lead Development | KapilIT Solutions Pvt Ltd</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Duration:</strong> Dec 2021 - Present</p>
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow-md mb-4">
+          <h3 className="text-lg font-semibold text-indigo-700 dark:text-indigo-300">🚀 Team Lead Development | KapilIT Solutions Pvt Ltd</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Duration:</strong> Dec 2021 - Present</p>
           <ul className="list-disc pl-6 mt-4 text-gray-700 dark:text-gray-300">
             <li>Led a full-stack team to build enterprise-grade applications using Angular, Node.js, and PostgreSQL.</li>
             <li>Supervised teams and individuals, giving feedback on performance and setting goals for improvement.</li>
@@ -20,9 +20,9 @@ const ProfessionalExperience = () => {
         </div>
 
         {/* Experience 2: Team Lead */}
-        <div className="experience-item bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 mb-8">
-          <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400">🚀 Team Lead | KCS Software Solutions</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Duration:</strong> Mar 2021 - Dec 2021</p>
+        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md shadow-md mb-4">
+          <h3 className="text-lg font-semibold text-indigo-700 dark:text-indigo-300">🚀 Team Lead | KCS Software Solutions</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Duration:</strong> Mar 2021 - Dec 2021</p>
           <ul className="list-disc pl-6 mt-4 text-gray-700 dark:text-gray-300">
             <li>Developed and maintained Angular + Node.js web applications for enterprise clients.</li>
             <li>Integrated secure REST APIs for seamless communication between frontend & backend.</li>

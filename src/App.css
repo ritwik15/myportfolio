@@ -1,123 +1,16 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-body.dark-mode {
-  background-color: #121212;
-  color: #f0f0f0;
-}
-
-body.dark-mode a {
-  color: #90caf9;
-}
-
-body.dark-mode section {
-  background-color: #1e1e1e;
-  border-color: #333;
-}
-@media (max-width: 768px) {
-  nav ul {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-  }
-}
-
+/* Minimal app.css — keep only what's needed */
 :root {
+  --link-color: #1e40af; /* Optional fallback */
   --nav-bg: #fff;
-  --link-color: #333;
-}
-
-body.dark {
-  --nav-bg: #222;
-  --link-color: #fff;
-}
-
-.navbar {
-  position: sticky;
-  top: 0;
-  background-color: var(--nav-bg);
-  border-bottom: 1px solid #ddd;
-  z-index: 10;
-}
-
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  max-width: 1200px;
-  margin: auto;
-}
-
-.navbar-logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--link-color);
-}
-
-.navbar-links {
-  display: flex;
-  list-style: none;
-  gap: 20px;
 }
 
 .navbar-links li a {
-  color: var(--link-color);
   text-decoration: none;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
-.toggle-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: var(--link-color);
-  cursor: pointer;
-}
-
-/* Responsive */
 .hamburger {
   display: none;
   font-size: 24px;
-  color: var(--link-color);
   cursor: pointer;
 }
 
@@ -131,8 +24,7 @@ body.dark {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px 0;
     background-color: var(--nav-bg);
   }
 

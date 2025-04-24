@@ -4,9 +4,9 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-16 px-4 bg-gray-50 text-center">
+    <section id="contact" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-12 px-4 text-center">
       <h2 className="text-3xl font-bold text-blue-600 mb-6 text-center">Contact Me</h2>
-      <p className="text-gray-700 mb-8">
+      <p className="text-gray-600 dark:text-gray-300">
         If you’d like to get in touch, feel free to email me or connect on GitHub and LinkedIn:
       </p>
 
@@ -23,7 +23,7 @@ const Contact = () => {
           href="https://github.com/ritwik15"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-gray-800 hover:text-black text-lg transition"
+          className="flex items-center gap-2 text-blue-700 hover:text-blue-900 text-lg transition"
         >
           <FaGithub size={20} />
           GitHub
