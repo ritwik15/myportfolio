@@ -10,7 +10,7 @@ import 'aos/dist/aos.css';
 import WaveSeparator from './components/WaveSeparator';
 import ProfessionalExperience from './components/Experience';
 import { DarkModeProvider } from './components/DarkModeContext'; // adjust the path if needed
-
+import heroData from './data/hero';// adjust path if needed
 function App() {
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -20,7 +20,7 @@ function App() {
     <DarkModeProvider>
       <div className="dark:bg-gray-900 dark:text-white"> {/* Apply dark mode globally */}
         <Navbar />
-        <Hero />
+        <Hero {...heroData} />
         <About />
         <Projects />
         <ProfessionalExperience />
