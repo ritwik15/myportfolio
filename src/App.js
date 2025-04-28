@@ -11,6 +11,7 @@ import WaveSeparator from './components/WaveSeparator';
 import ProfessionalExperience from './components/Experience';
 import { DarkModeProvider } from './components/DarkModeContext'; // adjust the path if needed
 import heroData from './data/hero';// adjust path if needed
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -19,13 +20,24 @@ function App() {
   return (
     <DarkModeProvider>
       <div className="dark:bg-gray-900 dark:text-white"> {/* Apply dark mode globally */}
-        <Navbar />
+      <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Hero {...heroData} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/projects" element={ <Projects />} />
+        <Route path="/experience" element={<ProfessionalExperience />} />
+        <Route path="/skills" element={<Skills />} />
+      </Routes>
+    </Router>
+        {/* <Navbar />
         <Hero {...heroData} />
         <About />
         <Projects />
         <ProfessionalExperience />
         <Skills />
-        <Contact />
+        <Contact /> */}
       </div>
     </DarkModeProvider>
   );

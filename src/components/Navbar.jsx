@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { FaMoon, FaBars, FaTimes, FaSun } from 'react-icons/fa';
 import { useDarkMode } from './DarkModeContext'; // Adjust path as necessary
+import { Link,NavLink } from "react-router-dom";
 
 const Navbar = () => {
-  const { darkMode, toggleDarkMode } = useDarkMode(); // Correct usage of context
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const [isOpen, setIsOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  // Updated: Use React Router paths
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Experience', path: '/experience' },
+    { name: 'Skills', path: '/skills' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   useEffect(() => {
@@ -35,13 +37,20 @@ const Navbar = () => {
           {isLargeScreen ? (
             <div className="flex items-center space-x-6">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-blue-600 dark:text-white font-medium hover:underline"
-                >
-                  {link.name}
-                </a>
+                 <NavLink
+                 key={link.name}
+                 to={link.path}
+                 className={({ isActive }) =>
+                   `font-medium ${ isActive
+                    ? 'text-gray-900 dark:text-yellow-300 underline'   // Active link: dark in light mode, yellow in dark mode
+                    : 'text-gray-700 dark:text-gray-300 hover:underline' // Inactive link: slightly lighter in both modes
+                    // 
+                    }`
+                 }
+                 onClick={() => setIsOpen(false)}
+               >
+                 {link.name}
+               </NavLink>
               ))}
               {/* Dark Mode Toggle */}
               <button onClick={toggleDarkMode} className="text-xl">
@@ -53,7 +62,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            // Mobile Menu
+            // Mobile Menu Icon
             <div className="flex items-center">
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -67,18 +76,18 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu (only visible when open) */}
+      {/* Mobile Menu */}
       {!isLargeScreen && isOpen && (
         <div className="bg-white dark:bg-gray-800 text-center px-4 pb-4">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.path}
               className="block py-2 text-blue-600 dark:text-white font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)} // Close menu after clicking a link
+              onClick={() => setIsOpen(false)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
           {/* Dark Mode Toggle */}
           <button onClick={toggleDarkMode} className="mt-4 text-xl">
