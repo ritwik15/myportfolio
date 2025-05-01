@@ -3,7 +3,7 @@ import {
   SiAngular, SiReact, SiNodedotjs, SiPostgresql, SiMongodb, SiAwslambda, SiAwsamplify
 } from 'react-icons/si';
 import { FaCode } from 'react-icons/fa';
-
+import { motion } from 'framer-motion';
 const About = () => {
   return (
     <section
@@ -70,6 +70,27 @@ const About = () => {
         improving <span className="font-semibold text-blue-600 dark:text-blue-400">JavaScript/Node.js</span> coding challenge skills,
         and preparing for interviews.
       </p>
+      <motion.div
+  className="mt-10 flex justify-center"
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+  viewport={{ once: true }}
+>
+  <a
+    href="/resume.pdf"
+    download
+    className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold px-6 py-3 rounded-lg shadow hover:scale-105 transition-transform duration-300"
+  >
+    {/* Icon SVG */}
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M3 3a1 1 0 011-1h4a1 1 0 100-2H4a3 3 0 00-3 3v12a3 3 0 003 3h12a3 3 0 003-3v-4a1 1 0 10-2 0v4a1 1 0 01-1 1H4a1 1 0 01-1-1V3z" />
+      <path d="M7 7a1 1 0 011-1h2V3l4 4-4 4V9H8a1 1 0 01-1-1V7z" />
+    </svg>
+    Download Resume
+  </a>
+</motion.div>
+
     </section>
   );
 };
