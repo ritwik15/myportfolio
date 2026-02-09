@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaSearch, FaSpinner, FaBook, FaStar, FaClock, FaUsers, FaTrophy, FaGraduationCap } from 'react-icons/fa';
+import { FaSearch, FaSpinner, FaBook, FaStar, FaGraduationCap } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const Search = () => {
