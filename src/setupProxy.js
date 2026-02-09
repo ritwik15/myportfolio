@@ -1,0 +1,14 @@
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app) {
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: 'http://localhost:3001/api',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api': '', // Strip /api since it's in the target URL now
+      },
+    })
+  );
+};

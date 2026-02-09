@@ -18,6 +18,9 @@
 .env.test.local
 .env.production.local
 
+# Local env file for development (do not commit)
+.env
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

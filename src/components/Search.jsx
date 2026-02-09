@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaSearch, FaSpinner, FaBook, FaStar, FaClock, FaUsers, FaTrophy, FaGraduationCap } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -7,82 +7,86 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [error, setError] = useState('');
+
+  const debounceRef = useRef(null);
+  const cacheRef = useRef({});
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!searchQuery.trim()) return;
-
-    setLoading(true);
-    setSearched(true);
-
-    // Simulate API call with mock data
-    setTimeout(() => {
-      const mockResults = [
-        {
-          id: 1,
-          title: 'Advanced React & TypeScript',
-          description: 'Master modern React patterns with TypeScript type safety',
-          category: 'Web Development',
-          level: 'Advanced',
-          duration: '40 hours',
-          rating: 4.8,
-          students: '12.5K',
-          color: 'from-blue-400 to-blue-600'
-        },
-        {
-          id: 2,
-          title: 'Node.js & Express Mastery',
-          description: 'Build scalable backend applications with Node.js',
-          category: 'Backend',
-          level: 'Intermediate',
-          duration: '32 hours',
-          rating: 4.7,
-          students: '9.2K',
-          color: 'from-green-400 to-green-600'
-        },
-        {
-          id: 3,
-          title: 'AWS Cloud Architecture',
-          description: 'Design and deploy production-ready AWS solutions',
-          category: 'Cloud',
-          level: 'Advanced',
-          duration: '28 hours',
-          rating: 4.9,
-          students: '8.1K',
-          color: 'from-orange-400 to-orange-600'
-        },
-        {
-          id: 4,
-          title: 'PostgreSQL for Developers',
-          description: 'Master database design and optimization with PostgreSQL',
-          category: 'Database',
-          level: 'Intermediate',
-          duration: '24 hours',
-          rating: 4.6,
-          students: '6.3K',
-          color: 'from-purple-400 to-purple-600'
-        }
-      ];
-
-      // Filter based on search query
-      const filtered = mockResults.filter(
-        course =>
-          course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.category.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-
-      setResults(filtered.length > 0 ? filtered : mockResults);
-      setLoading(false);
-    }, 800);
+    if (searchQuery.trim().length < 3) {
+      setError(`Enter at least 3 characters (${searchQuery.trim().length}/3)`);
+      return;
+    }
+    setError('');
+    await performSearch(searchQuery);
   };
 
-  const categories = [
-    { name: 'Web Development', icon: '🌐', count: 245, color: 'from-blue-400 to-blue-600' },
-    { name: 'Backend', icon: '⚙️', count: 128, color: 'from-green-400 to-green-600' },
-    { name: 'Cloud', icon: '☁️', count: 87, color: 'from-orange-400 to-orange-600' },
-    { name: 'Database', icon: '💾', count: 64, color: 'from-purple-400 to-purple-600' },
-  ];
+  // helper to perform search programmatically (e.g., from category clicks)
+  const performSearch = async (query) => {
+    if (!query || !query.trim()) return;
+    setSearchQuery(query);
+    setSearched(true);
+    setError('');
+    // return cached results if available
+    const cached = cacheRef.current[query.toLowerCase()];
+    if (cached) {
+      setResults(cached);
+      return;
+    }
+
+    setLoading(true);
+    const url = `/api/search?q=${encodeURIComponent(query)}`;
+    console.log('Searching:', url);
+    try {
+      const res = await fetch(url);
+      console.log('Response status:', res.status);
+      const text = await res.text();
+      console.log('Response:', text.slice(0, 200));
+      const data = JSON.parse(text);
+      if (res.ok && data && Array.isArray(data.results)) {
+        const normalized = data.results.map((r, i) => ({ ...r, id: r.id || `${i}` }));
+        setResults(normalized);
+        try { cacheRef.current[query.toLowerCase()] = normalized; } catch (e) { /* ignore */ }
+      } else {
+        setResults([]);
+        setError('No results found or invalid response');
+        console.error('Search error', data);
+      }
+    } catch (err) {
+      console.error('Search request failed', err);
+      setResults([]);
+      setError(`Connection failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
+  const handleInputChange = (e) => {
+    const v = e.target.value;
+    setSearchQuery(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    // Only proceed if at least 3 characters
+    const charCount = v.trim().length;
+    if (charCount < 3) {
+      setError(`Enter at least 3 characters (${charCount}/3)`);
+      return;
+    }
+    // auto-search after user stops typing
+    debounceRef.current = setTimeout(() => {
+      if (v && v.trim()) {
+        setError('');
+        performSearch(v);
+      }
+    }, 600);
+  };
 
   const courseCardVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -114,228 +118,170 @@ const Search = () => {
         ></motion.div>
       </div>
 
-      {/* Header Section */}
-      <section className="relative w-full py-20 px-4 sm:px-6 lg:px-12 border-b border-purple-500/20">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <motion.div 
-              className="inline-flex items-center gap-3 mb-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 rounded-full px-6 py-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <FaGraduationCap className="text-purple-400" />
-              <span className="text-sm font-semibold text-purple-300">AI-Powered Learning</span>
-            </motion.div>
-            
-            <h1 className="text-5xl sm:text-7xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-              Explore Courses
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-              Discover the perfect course tailored to your learning goals. AI-powered search, curated content.
-            </p>
-          </motion.div>
+      {/* Unified Search & Content Section */}
+      <section className="relative w-full">
+        {/* Sticky Search Header */}
+        <div className={`sticky top-0 z-40 w-full px-4 sm:px-6 lg:px-12 transition-all duration-300 ${
+          searched ? 'bg-slate-900/95 backdrop-blur-md py-4 border-b border-purple-500/20' : 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-20'
+        }`}>
+          <div className="max-w-6xl mx-auto">
+            {/* Title Section - Only Show on Landing */}
+            {!searched && (
+              <motion.div
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-12"
+              >
+                <motion.div 
+                  className="inline-flex items-center gap-3 mb-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 rounded-full px-6 py-3"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <FaGraduationCap className="text-purple-400" />
+                  <span className="text-sm font-semibold text-purple-300">AI-Powered Learning</span>
+                </motion.div>
+                
+                <h1 className="text-5xl sm:text-6xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+                  Explore Courses
+                </h1>
+                <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+                  Discover the perfect course tailored to your learning goals. AI-powered search, curated content.
+                </p>
+              </motion.div>
+            )}
 
-          {/* Search Bar */}
-          <motion.form
-            onSubmit={handleSearch}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative max-w-2xl mx-auto"
-          >
-            <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative bg-slate-900 rounded-2xl p-1">
-                <div className="flex items-center px-6 py-4 bg-slate-800 rounded-xl">
-                  <FaSearch className="text-purple-400 text-xl mr-4" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search courses, topics, skills..."
-                    className="flex-1 bg-transparent text-white placeholder-gray-500 focus:outline-none text-lg"
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="ml-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 text-white px-8 py-2 rounded-lg font-bold transition-all transform hover:scale-105"
-                  >
-                    {loading ? <FaSpinner className="animate-spin inline" /> : 'Search'}
-                  </button>
+            {/* Search Form - Always Visible */}
+            <motion.form
+              onSubmit={handleSearch}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className={`transition-all duration-300 mx-auto ${
+                searched ? 'max-w-2xl' : 'max-w-4xl'
+              }`}>
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                  <div className="relative bg-slate-900 rounded-2xl p-1">
+                    <div className="flex items-center bg-slate-800 rounded-xl px-6 py-4">
+                      <FaSearch className="text-purple-400 text-xl mr-4 flex-shrink-0" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleInputChange}
+                        placeholder="Search courses, topics, skills..."
+                        className="flex-1 bg-transparent text-white placeholder-gray-500 focus:outline-none text-lg"
+                      />
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="ml-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 text-white px-8 py-2 rounded-lg font-bold transition-all transform hover:scale-105 flex-shrink-0"
+                      >
+                        {loading ? <FaSpinner className="animate-spin inline" /> : 'Search'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.form>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 py-20">
-        {!searched ? (
-          <div>
-            {/* Categories */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mb-20"
-            >
-              <h2 className="text-3xl font-bold text-white mb-8 text-center">Browse by Category</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {categories.map((category, index) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 * index }}
-                    whileHover={{ scale: 1.08, y: -8 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      setSearchQuery(category.name);
-                      setSearched(true);
-                    }}
-                    className="group relative overflow-hidden"
-                  >
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${category.color} rounded-2xl blur opacity-60 group-hover:opacity-100 transition duration-300`}></div>
-                    <div className="relative bg-slate-900 rounded-2xl p-8 text-left h-full flex flex-col justify-between">
-                      <div>
-                        <div className="text-5xl mb-4">{category.icon}</div>
-                        <h3 className="font-bold text-xl text-white mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition">
-                          {category.name}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-gray-400 group-hover:text-gray-300 transition">
-                        {category.count} courses
-                      </p>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Featured Courses */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <h2 className="text-3xl font-bold text-white mb-8 text-center flex items-center justify-center gap-2">
-                <FaTrophy className="text-yellow-400" />
-                Popular Courses
-              </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {[
-                  {
-                    title: 'JavaScript Masterclass',
-                    category: 'Web Development',
-                    level: 'Beginner',
-                    rating: 4.9,
-                    color: 'from-yellow-400 to-orange-600'
-                  },
-                  {
-                    title: 'Full-Stack MERN Development',
-                    category: 'Web Development',
-                    level: 'Advanced',
-                    rating: 4.8,
-                    color: 'from-blue-400 to-purple-600'
-                  },
-                  {
-                    title: 'DevOps Essentials',
-                    category: 'Cloud',
-                    level: 'Intermediate',
-                    rating: 4.7,
-                    color: 'from-green-400 to-teal-600'
-                  },
-                  {
-                    title: 'System Design Fundamentals',
-                    category: 'Backend',
-                    level: 'Advanced',
-                    rating: 4.8,
-                    color: 'from-pink-400 to-red-600'
-                  },
-                ].map((course, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 * index }}
-                    whileHover={{ scale: 1.04, y: -8 }}
-                    className="group relative overflow-hidden"
-                  >
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${course.color} rounded-2xl blur opacity-60 group-hover:opacity-100 transition duration-300`}></div>
-                    <div className="relative bg-slate-900 rounded-2xl p-8 h-full">
-                      <div className="flex items-start justify-between mb-4">
-                        <motion.div 
-                          className="bg-gradient-to-br from-blue-500 to-purple-500 p-3 rounded-xl text-white"
-                          whileHover={{ rotate: 10, scale: 1.1 }}
-                        >
-                          <FaBook className="text-2xl" />
-                        </motion.div>
-                        <span className={`text-xs font-bold px-4 py-2 rounded-full ${getLevelColor(course.level)}`}>
-                          {course.level}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-xl text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition">
-                        {course.title}
-                      </h3>
-                      <p className="text-sm text-gray-400 mb-6">
-                        {course.category}
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          <FaStar className="text-yellow-400" />
-                          <span className="font-bold text-white">{course.rating}</span>
-                        </div>
-                        <span className="text-gray-500">•</span>
-                        <span className="text-gray-400 text-sm">1.2K students</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+            </motion.form>
           </div>
-        ) : (
-          <div>
+        </div>
+
+        {searched && (
+          <>
+            {/* Main Content Area */}
+            <section className="relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-slate-950 dark:via-purple-950 dark:to-slate-950">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 py-20">
             {/* Search Results */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex items-center justify-between mb-12">
-                <h2 className="text-3xl font-bold text-white">Search Results</h2>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12 gap-6">
+                <div>
+                  <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">Search Results</h2>
+                  <p className="text-gray-400 text-sm">Found <span className="text-purple-400 font-bold">{results.length}</span> amazing courses for you</p>
+                </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     setSearched(false);
                     setResults([]);
                     setSearchQuery('');
+                    setError('');
                   }}
-                  className="text-purple-400 hover:text-purple-300 font-bold underline transition"
+                  className="px-6 py-2 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white font-bold rounded-lg transition"
                 >
                   Clear Search
                 </motion.button>
               </div>
 
-              {results.length === 0 ? (
+              {loading ? (
                 <motion.div
                   variants={courseCardVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-center py-20"
+                  className="text-center py-24"
                 >
-                  <FaSearch className="text-6xl text-gray-500 mx-auto mb-4 opacity-50" />
-                  <p className="text-gray-400 text-xl">
-                    No courses found. Try a different search.
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                    className="inline-block"
+                  >
+                    <FaSpinner className="text-7xl text-purple-400 mx-auto mb-6" />
+                  </motion.div>
+                  <p className="text-gray-300 text-2xl font-bold mb-2">
+                    Finding perfect courses...
+                  </p>
+                  <p className="text-gray-400 text-base">
+                    This usually takes a few seconds
+                  </p>
+                </motion.div>
+              ) : error ? (
+                <motion.div
+                  variants={courseCardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-center py-24"
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <FaSearch className="text-7xl text-red-500 mx-auto mb-6 opacity-70" />
+                  </motion.div>
+                  <p className="text-red-400 text-xl font-bold mb-3">
+                    {error}
+                  </p>
+                  <p className="text-gray-400 text-base">
+                    Make sure the frontend dev server is running (npm start) and backend on port 3001
+                  </p>
+                </motion.div>
+              ) : results.length === 0 ? (
+                <motion.div
+                  variants={courseCardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-center py-24"
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <FaSearch className="text-7xl text-gray-500 mx-auto mb-6 opacity-50" />
+                  </motion.div>
+                  <p className="text-gray-300 text-2xl font-bold mb-2">
+                    No courses found
+                  </p>
+                  <p className="text-gray-400 text-base">
+                    Try adjusting your search terms or explore other keywords
                   </p>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.map((course, index) => (
                     <motion.div
                       key={course.id}
@@ -344,53 +290,63 @@ const Search = () => {
                       animate="visible"
                       transition={{ delay: index * 0.1 }}
                       whileHover={{ scale: 1.04, y: -8 }}
-                      className="group relative overflow-hidden"
+                      onClick={() => {
+                        if (course.url) window.open(course.url, '_blank');
+                      }}
+                      className="group relative overflow-hidden cursor-pointer"
                     >
-                      <div className={`absolute -inset-0.5 bg-gradient-to-r ${course.color} rounded-2xl blur opacity-60 group-hover:opacity-100 transition duration-300`}></div>
-                      <div className="relative bg-slate-900 rounded-2xl p-8 h-full">
-                        <div className="flex items-start justify-between mb-4">
+                      <div className={`absolute -inset-0.5 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-500`}></div>
+                      <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-6 h-full flex flex-col border border-purple-500/20 group-hover:border-purple-500/50 transition duration-300">
+                        <div className="flex items-start justify-between mb-2">
                           <motion.div 
-                            className="bg-gradient-to-br from-blue-500 to-purple-500 p-3 rounded-xl text-white"
+                            className="bg-gradient-to-br from-blue-500 to-purple-500 p-1.5 rounded-lg text-white"
                             whileHover={{ rotate: 10, scale: 1.1 }}
                           >
-                            <FaBook className="text-2xl" />
+                            <FaBook className="text-sm" />
                           </motion.div>
-                          <span className={`text-xs font-bold px-4 py-2 rounded-full ${getLevelColor(course.level)}`}>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getLevelColor(course.level)}`}>
                             {course.level}
                           </span>
                         </div>
-                        <h3 className="font-bold text-xl text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition">
+                        <h3 className="font-black text-base text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-blue-400 transition line-clamp-2">
                           {course.title}
                         </h3>
-                        <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+                        <p className="text-gray-400 mb-3 text-sm line-clamp-3 flex-grow">
                           {course.description}
                         </p>
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          <span className="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full font-semibold">
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          <span className="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
                             {course.category}
                           </span>
-                          <span className="text-xs flex items-center gap-1 text-gray-400 bg-gray-500/10 border border-gray-500/20 px-3 py-1 rounded-full">
-                            <FaClock size={12} /> {course.duration}
-                          </span>
                         </div>
-                        <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
-                              <FaStar className="text-yellow-400" />
-                              <span className="font-bold text-white">{course.rating}</span>
-                            </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-700 mt-auto">
+                          <div className="flex items-center gap-1">
+                            <FaStar className="text-yellow-400 text-xs" />
+                            <span className="font-bold text-white text-xs">{course.rating}</span>
                           </div>
-                          <span className="text-gray-400 text-sm flex items-center gap-1">
-                            <FaUsers size={14} /> {course.students}
-                          </span>
                         </div>
+                        {course.url && (
+                          <motion.a
+                            href={course.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="block mt-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded-lg text-center text-sm transition shadow-lg hover:shadow-purple-500/50"
+                          >
+                            Enroll Now →
+                          </motion.a>
+                        )}
                       </div>
                     </motion.div>
                   ))}
                 </div>
               )}
             </motion.div>
-          </div>
+              </div>
+            </section>
+          </>
         )}
       </section>
     </div>
