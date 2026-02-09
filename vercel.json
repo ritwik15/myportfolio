@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "server/index.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}

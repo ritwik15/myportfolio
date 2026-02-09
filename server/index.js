@@ -43,7 +43,10 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, '0.0.0.0', () => console.log(`Course agent listening on port ${PORT}`));
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, '0.0.0.0', () => console.log(`Course agent listening on port ${PORT}`));
+}
 
 module.exports = app;
