@@ -3,17 +3,15 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
+import Search from './components/Search';
 import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import ProfessionalExperience from './components/Experience';
-import WaveSeparator from './components/WaveSeparator';
 import ScrollToTop from './components/ScrollToTop';
 import PageWrapper from './components/PageWrapper';
 import { DarkModeProvider } from './components/DarkModeContext';
-import heroData from './data/hero';
+import AboutPage from './pages/About';
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -24,8 +22,8 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageWrapper><Hero {...heroData} /></PageWrapper>} />
-        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/" element={<PageWrapper><Search /></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><AboutPage /></PageWrapper>} />
         <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
         <Route path="/projects" element={<PageWrapper><Projects /></PageWrapper>} />
         <Route path="/experience" element={<PageWrapper><ProfessionalExperience /></PageWrapper>} />

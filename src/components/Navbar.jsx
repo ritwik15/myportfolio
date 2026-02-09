@@ -12,9 +12,6 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Experience', path: '/experience' },
-    { name: 'Skills', path: '/skills' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -30,9 +27,6 @@ const Navbar = () => {
     <nav className="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Brand */}
-          <div className="text-2xl font-bold text-blue-600 dark:text-white">Ritwik</div>
-
           {/* Desktop Menu */}
           {isLargeScreen ? (
             <div className="flex items-center space-x-6">
