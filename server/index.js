@@ -10,8 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Basic search endpoint that aggregates providers
-app.get('/api/search', async (req, res) => {
+// Search endpoint - works for both /api/search and /search (vercel strips /api)
+app.get(['/api/search', '/search'], async (req, res) => {
   const q = (req.query.q || '').trim();
   try {
     const providers = [mockProvider, chatgptProvider, webSearchProvider];
